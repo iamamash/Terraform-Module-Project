@@ -48,7 +48,8 @@ resource "aws_route_table_association" "public_a" {
 }
 
 resource "aws_eip" "nat" {
-  count = 3
+  count      = 3
+  depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_nat_gateway" "gw" {
