@@ -96,6 +96,31 @@ resource "aws_instance" "public" {
   subnet_id       = element(aws_subnet.public[*].id, 0)
   key_name        = var.key_name
   security_groups = [aws_security_group.public_sg.id]
+  user_data       = file("D:/DevOps/Projects/Terraform-Module-Project/vpc/ansible.sh")
+
+  provisioner "file" {
+    source      = "~/.ssh/id_rsa"
+    destination = "/home/ubuntu/id_rsa"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/id_rsa")
+      host        = self.public_ip
+    }
+  }
+
+  provisioner "file" {
+    source      = "D:/DevOps/Projects/Terraform-Module-Project/ansible/playbook.yaml"
+    destination = "/home/ubuntu/playbook.yaml"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/id_rsa")
+      host        = self.public_ip
+    }
+  }
 
   tags = {
     Name = "public-instance"
