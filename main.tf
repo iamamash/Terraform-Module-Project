@@ -22,6 +22,12 @@ module "load-balancer" {
   private_instance_id = module.vpc.private_instance_id
 }
 
+module "api-gateway" {
+  source           = "./api-gateway"
+  api_gateway_name = "nginx-api"
+  dns_name         = module.load-balancer.dns_name
+}
+
 ######################### Output Block ###############################
 
 output "vpc_id" {
@@ -55,4 +61,8 @@ output "private_instance_ip" {
 
 output "public_instance_ip" {
   value = module.vpc.public_instance_ip
+}
+
+output "dns_name" {
+  value = module.load-balancer.dns_name
 }
