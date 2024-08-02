@@ -12,7 +12,15 @@ module "ssh-key" {
   key_name = "zenskar-key"
 }
 
-
+module "load-balancer" {
+  source              = "./load-balancer"
+  alb_name            = "private-alb"
+  alb_type            = "application"
+  private_sg_id       = module.vpc.private_sg_id
+  private_subnet_id   = module.vpc.private_subnet_id
+  vpc_id              = module.vpc.vpc_id
+  private_instance_id = module.vpc.private_instance_id
+}
 
 ######################### Output Block ###############################
 
@@ -22,6 +30,18 @@ output "vpc_id" {
 
 output "public_subnet_id" {
   value = module.vpc.public_subnet_id
+}
+
+output "private_subnet_id" {
+  value = module.vpc.private_subnet_id
+}
+
+output "private_sg_id" {
+  value = module.vpc.private_sg_id
+}
+
+output "private_instance_id" {
+  value = module.vpc.private_instance_id
 }
 
 output "ssh_private_key" {
