@@ -10,4 +10,11 @@ terraform {
       version = "~> 5.0"        # Version of the AWS provider
     }
   }
+
+  backend "s3" {
+    bucket         = "terraform-module-project-bucket"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-module-project-table"
+  }
 }
