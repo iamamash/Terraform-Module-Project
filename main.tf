@@ -66,3 +66,11 @@ output "public_instance_ip" {
 output "dns_name" {
   value = module.load-balancer.dns_name
 }
+
+output "private1_ip" {
+  value = module.vpc.private1_ip
+}
+
+output "private2_ip" {
+  value = module.vpc.private2_ip
+}

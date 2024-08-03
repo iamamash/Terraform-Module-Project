@@ -27,3 +27,11 @@ output "private_sg_id" {
 output "private_instance_id" {
   value = aws_instance.private[*].id
 }
+
+output "private1_ip" {
+  value = aws_instance.private[0].private_ip
+}
+
+output "private2_ip" {
+  value = aws_instance.private[1].private_ip
+}

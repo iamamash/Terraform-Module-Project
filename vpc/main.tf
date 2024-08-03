@@ -96,7 +96,35 @@ resource "aws_instance" "public" {
   subnet_id       = element(aws_subnet.public[*].id, 0)
   key_name        = var.key_name
   security_groups = [aws_security_group.public_sg.id]
-  user_data       = file("D:/DevOps/Projects/Terraform-Module-Project/vpc/ansible.sh")
+
+  user_data = <<-EOF
+    #!/bin/bash
+    export PRIVATE_IP1="${aws_instance.private[0].private_ip}"
+    export PRIVATE_IP2="${aws_instance.private[1].private_ip}"
+
+    sudo apt-get update -y
+    sudo apt-get install software-properties-common -y
+    sudo add-apt-repository --yes --update ppa:ansible/ansible -y
+    sudo apt-get install ansible -y
+
+    bash -c "$(cat <<'EOT'
+      # Your script content here
+      cat <<EOT > /home/ubuntu/inventory
+      [private]
+      private1 ansible_host=$PRIVATE_IP1
+      private2 ansible_host=$PRIVATE_IP2
+
+      [private:vars]
+      ansible_python_interpreter=/usr/bin/python3
+      ansible_user=ubuntu
+      ansible_ssh_private_key_file=/home/ubuntu/id_rsa
+      EOT
+    EOT
+    )"
+
+    sudo chmod 400 /home/ubuntu/id_rsa
+    sudo chown ubuntu:ubuntu /home/ubuntu/inventory
+  EOF
 
   provisioner "file" {
     source      = "~/.ssh/id_rsa"
@@ -125,6 +153,8 @@ resource "aws_instance" "public" {
   tags = {
     Name = "public-instance"
   }
+
+  depends_on = [aws_instance.private]
 }
 
 resource "aws_security_group" "private_sg" {
@@ -177,3 +207,4 @@ resource "aws_security_group" "public_sg" {
     Name = "public-sg"
   }
 }
+
