@@ -69,6 +69,7 @@ git clone https://github.com/iamamash/Terraform-Module-Project.git
   sudo chown ubuntu:ubuntu /home/ubuntu/inventory
   sudo ansible -i /home/ubuntu/inventory -m ping private
   sudo ansible-playbook -i /home/ubuntu/inventory /home/ubuntu/playbook.yaml
+  sudo ansible -i /home/ubuntu/inventory -a "sudo apt-get update -y" private
   ```
 
 ### 4. **Verify the Deployment**
